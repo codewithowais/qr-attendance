@@ -14,13 +14,16 @@ class CameraViewModel extends BaseViewModel {
 
   Future<void> onScan(String qrCode) async {
     try {
-      final json = jsonDecode(qrCode);
+      final parts = qrCode.split('|');
+      if (parts.length < 7) throw FormatException("Invalid QR format");
+
       final data = AttendanceData(
-        studentId: json['id'],
-        name: json['name'],
-        branch: json['branch'],
-        grade: json['grade'],
-        profilePicUrl: json['pic'],
+        studentId: parts[3],
+        name: parts[4],
+        branch: parts[1],
+        grade: parts[2],
+        profilePicUrl:
+            "https://via.placeholder.com/150", // or replace with parts[6] if available
         scannedAt: DateTime.now(),
       );
 
@@ -33,7 +36,7 @@ class CameraViewModel extends BaseViewModel {
         await _queueService.addToQueue(data);
       }
     } catch (e) {
-      print("Invalid QR Code: $e");
+      print("❌ Invalid QR Code: $e");
     }
   }
 

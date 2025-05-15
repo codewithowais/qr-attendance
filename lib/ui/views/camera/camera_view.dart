@@ -15,11 +15,12 @@ class CameraView extends StatelessWidget {
             appBar: AppBar(title: Text("Scan QR")),
             body: MobileScanner(
               controller: MobileScannerController(),
-              onDetect: (barcode) {
-                final String? rawValue = barcode.barcodes.first.rawValue;
-                if (rawValue != null) {
-                  model.onScan(rawValue);
-                  Navigator.pop(context);
+              onDetect: (capture) {
+                final barcode = capture.barcodes.first;
+                final value = barcode.rawValue;
+                if (value != null) {
+                  model.onScan(value);
+                  // Navigator.pop(context);
                 }
               },
             ),
