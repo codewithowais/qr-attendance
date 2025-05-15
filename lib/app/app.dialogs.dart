@@ -6,13 +6,9 @@ import '../models/attendance_data.dart';
 void registerCustomDialogUi() {
   final dialogService = locator<DialogService>();
 
-  final builders = {
-    'student_confirmation': (
-      BuildContext context,
-      DialogRequest dialogRequest,
-      Function(DialogResponse) completer,
-    ) {
-      final AttendanceData data = dialogRequest.data;
+  dialogService.registerCustomDialogBuilders({
+    'student_confirmation': (context, dialogRequest, completer) {
+      final data = dialogRequest.data as AttendanceData;
 
       return Dialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -21,32 +17,31 @@ void registerCustomDialogUi() {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
+              Text(
                 'Confirm Attendance',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 16),
               Text("Name: ${data.name}"),
               Text("Grade: ${data.grade}"),
               Text("Branch: ${data.branch}"),
-              const SizedBox(height: 20),
+              const SizedBox(height: 24),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   TextButton(
                     onPressed: () {
-                      Navigator.of(context).pop(); // 👈 closes dialog manually
                       completer(DialogResponse(confirmed: false));
+                      Navigator.of(context).pop(); // ✅ closes dialog
                     },
-                    child: const Text('Cancel'),
+                    child: Text("Cancel"),
                   ),
-                  const SizedBox(width: 10),
+                  const SizedBox(width: 12),
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.of(context).pop(); // 👈 closes dialog manually
                       completer(DialogResponse(confirmed: true));
                     },
-                    child: const Text('OK'),
+                    child: Text("OK"),
                   ),
                 ],
               ),
@@ -55,7 +50,5 @@ void registerCustomDialogUi() {
         ),
       );
     },
-  };
-
-  dialogService.registerCustomDialogBuilders(builders);
+  });
 }

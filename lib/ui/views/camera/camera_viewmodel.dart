@@ -11,6 +11,7 @@ class CameraViewModel extends BaseViewModel {
   final DialogService _dialogService = locator<DialogService>();
   final QueueService _queueService = locator<QueueService>();
   final AttendanceService _attendanceService = locator<AttendanceService>();
+  final snack = locator<SnackbarService>();
 
   Future<void> onScan(String qrCode) async {
     try {
@@ -22,8 +23,7 @@ class CameraViewModel extends BaseViewModel {
         name: parts[4],
         branch: parts[1],
         grade: parts[2],
-        profilePicUrl:
-            "https://via.placeholder.com/150", // or replace with parts[6] if available
+        profilePicUrl: "https://via.placeholder.com/150",
         scannedAt: DateTime.now(),
       );
 
@@ -34,9 +34,10 @@ class CameraViewModel extends BaseViewModel {
 
       if (result?.confirmed == true) {
         await _queueService.addToQueue(data);
+        snack.showSnackbar(message: "${data.name} added to queue");
       }
     } catch (e) {
-      print("❌ Invalid QR Code: $e");
+      print("Invalid QR Code: $e");
     }
   }
 

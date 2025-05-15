@@ -3,13 +3,12 @@ import 'package:simplied_attendace/app/app.router.dart';
 import 'package:simplied_attendace/models/attendance_data.dart';
 import 'package:simplied_attendace/services/queue_service.dart';
 import 'package:stacked/stacked.dart';
-import 'package:stacked_services/stacked_services.dart'; // ✅ This imports @observable
+import 'package:stacked_services/stacked_services.dart';
 
 class HomeViewModel extends BaseViewModel {
   final QueueService _queueService = locator<QueueService>();
   final _navigationService = locator<NavigationService>();
 
-  // @observable // ✅ Now recognized!
   bool _darkMode = false;
 
   bool get darkMode => _darkMode;
@@ -18,18 +17,22 @@ class HomeViewModel extends BaseViewModel {
 
   void toggleTheme() {
     _darkMode = !_darkMode;
-    notifyListeners(); // Triggers UI update
+    notifyListeners();
   }
 
   Future<void> clearQueue() async {
     await _queueService.clearQueue();
-    // No need to notify here — QueueService already notifies listeners
+    notifyListeners();
   }
 
   @override
   List<ReactiveServiceMixin> get reactiveServices => [_queueService];
 
   goToCamera() {
-    _navigationService.replaceWith(Routes.cameraView);
+    _navigationService.navigateToCameraView();
+  }
+
+  void loadQueue() {
+    notifyListeners();
   }
 }
